@@ -75,6 +75,7 @@ sub write_jsonfile{
 	open ($fh, ">$file") or die "Can't write to file '$file' [$!]\n";
 	print $fh encode_json($json);
 	close $fh;
+  print "Konfiguration gespeichert<br>"
 }
 
 ##########################################################################
@@ -189,6 +190,7 @@ $template->param( pluginEnabled => $pluginEnabled );
 if ($R::btnSave)
 {
  $rsconfig->{'raumserver'}->{'port'} = $R::raumserverPort;
+ $rsconfig->{'raumserver'}->{'loglevel'} = $R::raumserverLoglevel;
  $rsconfig->{'raumfeld'}->{'raumfeldHost'} = $R::raumfeldHost;
  $rsconfig->{'raumfeld'}->{'raumfeldHostRequestPort'} = $R::raumfeldHostRequestPort;
  write_jsonfile($rsconfig, "$raumserverCfgFilePath/default.json");
