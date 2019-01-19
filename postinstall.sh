@@ -20,6 +20,10 @@
 # <ERROR> This is an error!"
 # <FAIL> This is a fail!"
 
+echo "<INFO> Copy config file to raumserver config folder"
+echo "<INF0> from $ARGV5/config/$ARGV3/ to $ARGV5/data/plugins/raumserver/node_modules/node-raumserver/config"
+cp -p -v -r  $ARGV5/config/$ARGV3/* $ARGV5/data/plugins/raumserver/node_modules/node-raumserver/config
+
 echo "<WARN> You need to reboot Loxberry in order to complete the installation"
 echo "<WARN> Loxberry muss neu gestartet werden um die Installation abzuschliessen."
 
