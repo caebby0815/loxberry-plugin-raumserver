@@ -82,7 +82,7 @@ sub write_jsonfile{
 # Main program
 ##########################################################################
 # Header
-LoxBerry::Web::lbheader("Raumserver Plugin V$version", "http://www.loxwiki.eu/x/2wN7AQ", "help.html");
+LoxBerry::Web::lbheader("Raumserver Plugin V$version", "https://www.loxwiki.eu/display/LOXBERRY/Raumserver", "help.html");
 
 # Template
 my $template = HTML::Template->new(
@@ -95,7 +95,7 @@ my $template = HTML::Template->new(
 
 
 # Language
-#my %L = LoxBerry::Web::readlanguage($template, "language.ini");
+my %L = LoxBerry::Web::readlanguage($template, "language.ini");
 # -------------------------------------------------------------------------
 # Labels, diese können später über die Sprachdatei gesteuert werden
 # -------------------------------------------------------------------------

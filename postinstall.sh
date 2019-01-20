@@ -20,9 +20,17 @@
 # <ERROR> This is an error!"
 # <FAIL> This is a fail!"
 
+# To use important variables from command line use the following code:
+ARGV0=$0 # Zero argument is shell command
+ARGV1=$1 # First argument is temp folder during install
+ARGV2=$2 # Second argument is Plugin-Name for scipts etc. (e.g. loxberry-plugin-raumserver)
+ARGV3=$3 # Third argument is Plugin installation folder (e.g. raumserver)
+ARGV4=$4 # Forth argument is Plugin version
+ARGV5=$5 # Fifth argument is Base folder of LoxBerry
+
+
 echo "<INFO> Copy config file to raumserver config folder"
-echo "<INF0> from $ARGV5/config/$ARGV3/ to $ARGV5/data/plugins/raumserver/node_modules/node-raumserver/config"
-cp -p -v -r  $ARGV5/config/$ARGV3/* $ARGV5/data/plugins/raumserver/node_modules/node-raumserver/config
+cp -p -v -r  $ARGV5/config/plugins/$ARGV3/* $ARGV5/data/plugins/$ARGV3/node_modules/node-raumserver/config/ 
 
 echo "<WARN> You need to reboot Loxberry in order to complete the installation"
 echo "<WARN> Loxberry muss neu gestartet werden um die Installation abzuschliessen."
