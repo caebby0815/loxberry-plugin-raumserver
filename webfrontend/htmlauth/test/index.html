@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Raumserver Test-Application</title>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand" />
+    <link rel="stylesheet" type="text/css" href="pretty-json/css/pretty-json.css" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    
+    <script type="text/javascript" src="jquery.js"></script>
+    
+    <script type="text/javascript" src="pretty-json/libs/underscore-min.js" ></script>
+    <script type="text/javascript" src="pretty-json/libs/backbone-min.js" ></script>
+    <script type="text/javascript" src="pretty-json/pretty-json-min.js" ></script>
+    
+    <script type="text/javascript" src="index.js"></script>
+  </head>
+  <body>
+
+    <div style="width: 100%; margin-top:15px; ">
+        node-raumserver host <input id="ip" style="width: 50em; background-color:lightgoldenrodyellow"></input> 
+    </div>
+    <div style="width: 100%; margin-top:5px; ">
+        Confirm requests<input id="confirm" type="checkbox"></input> 
+    </div>
+
+    <div style="width: 100%; height: 1px; background-color: gray; margin-top:15px;  margin-bottom:15px;"></div>
+
+    <div style="width: 100%; margin-top:15px; ">
+        <button type="button" onclick="doGetAction('getZoneConfig')">Get Zone Config</button> 
+        <button type="button" onclick="doGetAction('getRendererState')">Get Renderer State</button>
+        <button type="button" onclick="doAction('play')">Play All</button> 
+        <button type="button" onclick="doAction('stop')">Stop All</button> 
+        <button type="button" onclick="doAction('pause')">Pause All</button>
+        <button type="button" onclick="doAction('next')">Next</button> 
+        <button type="button" onclick="doAction('prev')">Prev</button>
+        <button type="button" onclick="doAction('sleepTimer?secondsUntilSleep=60&secondsForVolumeRamp=50')">Set Sleep Timer</button>
+        <button type="button" onclick="doAction('sleepTimer?secondsUntilSleep=0')">Cancel Sleep Timer</button>
+        <button type="button" onclick="doAction('getSleepTimerState')">Get Sleep Timer State</button>    
+        <button type="button" onclick="doAction('mute')">Mute All</button>
+        <button type="button" onclick="doAction('unMute')">UnMute All</button>
+        <button type="button" onclick="doAction('toggleMute')">Toggle Mute</button>
+    </div>
+    
+     <div style="width: 100%; height: 1px; background-color: gray; margin-top:15px;  margin-bottom:15px;"></div>
+    
+    <div>
+        Room Id <input id="id"></input>
+        <button type="button" onclick="doAction('getRendererState?id=' + $('#id').val())">Get Renderer State</button>
+        <button type="button" onclick="doAction('play?id=' + $('#id').val())">Play</button> 
+        <button type="button" onclick="doAction('stop?id=' + $('#id').val())">Stop</button> 
+        <button type="button" onclick="doAction('pause?id=' + $('#id').val())">Pause</button>
+        <button type="button" onclick="doAction('next?id=' + $('#id').val())">Next</button>
+        <button type="button" onclick="doAction('prev?id=' + $('#id').val())">Prev</button>
+        
+        <button type="button" onclick="doAction('enterManualStandby?id=' + $('#id').val() + '&scope=room')">Enter Standby</button>
+        <button type="button" onclick="doAction('enterAutomaticStandby?id=' + $('#id').val()+ '&scope=room')">Enter Auto. Standby</button>
+        <button type="button" onclick="doAction('leaveStandby?id=' + $('#id').val() + '&scope=room')">Leave Standby</button>
+    </div>
+
+    <div style="width: 100%; margin-top:10px;">   
+        Seek value <input id="seek"></input>
+        <button type="button" onclick="doAction('seekToTrack?id=' + $('#id').val() + '&trackNumber=' + $('#seek').val())">Seek To Track</button>
+        <button type="button" onclick="doAction('seek?id=' + $('#id').val() + '&value=' + $('#seek').val())">Seek Abs.</button>
+        <button type="button" onclick="doAction('seek?id=' + $('#id').val() + '&value=' + $('#seek').val() + '&relative=1')">Seek Rel.</button>
+    </div>
+    <div style="width: 100%; margin-top:10px;">
+         Play Mode <input id="playmode"></input>
+        <button type="button" onclick="doAction('setPlayMode?id=' + $('#id').val() + '&mode=' + $('#playmode').val())">Set Play Mode</button>  
+    </div>  
+
+    <div style="width: 100%; margin-top:10px;">
+        Volume<input id="volume"></input>
+        <button type="button" onclick="doAction('setVolume?id=' + $('#id').val() + '&value=' + $('#volume').val())">Set Vol on Zone</button>
+        <button type="button" onclick="doAction('setVolume?id=' + $('#id').val() + '&value=' + $('#volume').val() + '&scope=room')">Set Vol on Room</button>        
+        <button type="button" onclick="doAction('setVolume?id=' + $('#id').val() + '&value=' + $('#volume').val() + '&relative=1')">Set Rel. Vol on Zone</button>
+        <button type="button" onclick="doAction('setVolume?id=' + $('#id').val() + '&value=' + $('#volume').val() + '&scope=room&relative=1')">Set Rel. Vol on Room</button>
+        <button type="button" onclick="doAction('volumeUp?id=' + $('#id').val() + '&value=' + $('#volume').val())">Vol Up Zone</button>
+        <button type="button" onclick="doAction('volumeDown?id=' + $('#id').val() + '&value=' + $('#volume').val())">Vol Down Zone</button>
+        <button type="button" onclick="doAction('fadeToVolume?id=' + $('#id').val() + '&value=' + $('#volume').val() + '&duration=5000'  )">Fade To Vol</button>
+        <button type="button" onclick="doAction('fadeToVolume?id=' + $('#id').val() + '&value=' + $('#volume').val() + '&duration=5000&relative=1' )">Fade To Vol Rel.</button>
+        <button type="button" onclick="doAction('fadeToVolume?id=' + $('#id').val() + '&value=' + $('#volume').val() + '&duration=5000&scope=room'  )">Fade To Vol Room</button>
+        <button type="button" onclick="doAction('fadeToVolume?id=' + $('#id').val() + '&value=' + $('#volume').val() + '&duration=5000&relative=1&scope=room' )">Fade To Vol Rel. Room</button>
+    </div>
+    <div style="width: 100%; margin-top:10px;"> 
+        <button type="button" onclick="doAction('sleepTimer?id=' + $('#id').val() + '&secondsUntilSleep=60&secondsForVolumeRamp=50')">Set Sleep Timer</button>
+        <button type="button" onclick="doAction('sleepTimer?id=' + $('#id').val() + '&secondsUntilSleep=0')">Cancel Sleep Timer</button>
+        <button type="button" onclick="doAction('getSleepTimerState?id=' + $('#id').val())">Get Sleep Timer State</button>
+    </div>
+    <div style="width: 100%; margin-top:10px;">   
+        <button type="button" onclick="doAction('mute?id=' + $('#id').val())">Mute Zone</button>
+        <button type="button" onclick="doAction('unMute?id=' + $('#id').val())">UnMute Zone</button>
+        <button type="button" onclick="doAction('mute?id=' + $('#id').val() + '&scope=room')">Mute Room</button>
+        <button type="button" onclick="doAction('unMute?id=' + $('#id').val() + '&scope=room')">UnMute Room</button>
+        <button type="button" onclick="doAction('toggleMute?id=' + $('#id').val())">Toggle Mute Zone</button>
+        <button type="button" onclick="doAction('toggleMute?id=' + $('#id').val() + '&scope=room')">Toggle Mute Room</button>
+    </div>
+
+     <div style="width: 100%; height: 1px; background-color: gray; margin-top:15px;  margin-bottom:15px;"></div>
+
+     <div style="width: 100%; margin-top:10px;">
+        Room Id <input id="id2"></input>
+        Zone Id <input id="zoneId"></input>
+        <button type="button" onclick="doAction('createZone?id=' + $('#id2').val() )">Create Zone</button> 
+        <button type="button" onclick="doAction('dropFromZone?id=' + $('#id2').val() + '&zoneId=' + $('#zoneId').val()   )">Drop From Zone</button> 
+        <button type="button" onclick="doAction('addToZone?id=' + $('#id2').val() + '&zoneId=' + $('#zoneId').val()   )">Add To Zone</button>
+     </div>
+
+    <div style="width: 100%; height: 1px; background-color: gray; margin-top:15px;  margin-bottom:15px;"></div>
+
+    <div>
+        Room Id <input id="id9"></input>
+        value <input id="value9"></input>                 
+        <button type="button" onclick="doAction('loadPlaylist?id=' + $('#id9').val()  + '&value=' + ($('#value9').val()) )">Load Playlist</button>
+        <button type="button" onclick="doAction('loadContainer?id=' + $('#id9').val() + '&value=' + ($('#value9').val()) )">Load Container</button> 
+        <button type="button" onclick="doAction('loadUri?id=' + $('#id9').val()       + '&value=' + ($('#value9').val()) )">Load Uri</button> 
+        <button type="button" onclick="doAction('loadSingle?id=' + $('#id9').val()   + '&value=' + ($('#value9').val()) )">Load Single</button> 
+        <button type="button" onclick="doAction('loadLineIn?id=' + $('#id9').val()   + '&value=' + ($('#value9').val()) )">Load LineIn</button>
+        <button type="button" onclick="doAction('loadShuffle?id=' + $('#id9').val()   + '&value=' + ($('#value9').val()) )">Load Shuffle</button>
+     </div>
+    
+    <div style="width: 100%; height: 3px; background-color: gray; margin-top:15px; margin-bottom:15px;"></div>
+
+    
+    <div>     
+        <div id="resultData">
+        </div>
+    </div>
+  </body>
+</html>

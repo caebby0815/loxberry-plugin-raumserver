@@ -17,11 +17,11 @@ until $(curl --output /dev/null --silent --head --fail http://nodejs.org); do
     sleep 5
 done
 
-# Test if nodejs is installed otherwise install it: 
+# Test if nodejs is installed otherwise install it:
 if [ `which nodejs > /dev/null; echo $?` -ne 0 ] || [ `which npm > /dev/null; echo $?` -ne 0 ]
-then 
+then
     if [ `grep Hardware /proc/cpuinfo | grep -E -c 'BCM[0-9]+'` -eq 1 ]
-    then 
+    then
         # based on https://github.com/audstanley/NodeJs-Raspberry-Pi/
         PICHIP=$(uname -m);
         LINKTONODE=$(curl -sG https://nodejs.org/dist/latest-v9.x/ | awk '{print $2}' | grep -P 'href=\"node-v9\.\d{1,}\.\d{1,}-linux-'$PICHIP'\.tar\.gz' | sed 's/href="//' | sed 's/<\/a>//' | sed 's/">.*//');
@@ -40,14 +40,14 @@ then
         #This line will remove the nodeJs tar we downloaded.
         rm -R -f /tmp/tempNode/$LINKTONODE/;
         #Create symlinks to node && npm
-        ln -s /opt/nodejs/bin/node /usr/bin/node; ln -s /opt/nodejs/bin/node /usr/sbin/node; 
-        ln -s /opt/nodejs/bin/node /sbin/node; ln -s /opt/nodejs/bin/node /usr/local/bin/node; 
-        ln -s /opt/nodejs/bin/npm /usr/bin/npm; 
-        ln -s /opt/nodejs/bin/npm /usr/sbin/npm; ln -s /opt/nodejs/bin/npm /sbin/npm; 
-        ln -s /opt/nodejs/bin/npm /usr/local/bin/npm; 
-    else 
+        ln -s /opt/nodejs/bin/node /usr/bin/node; ln -s /opt/nodejs/bin/node /usr/sbin/node;
+        ln -s /opt/nodejs/bin/node /sbin/node; ln -s /opt/nodejs/bin/node /usr/local/bin/node;
+        ln -s /opt/nodejs/bin/npm /usr/bin/npm;
+        ln -s /opt/nodejs/bin/npm /usr/sbin/npm; ln -s /opt/nodejs/bin/npm /sbin/npm;
+        ln -s /opt/nodejs/bin/npm /usr/local/bin/npm;
+    else
         if [ ! -f /etc/apt/sources.list.d/nodesource.list ]
-        then 
+        then
             /usr/bin/logger "Raumserver installation: nodesources repo not installed. Starting installation now."
             # Nodejs current is recommended as of
             #  https://github.com/ChriD/node-raumserver#requirements
@@ -57,11 +57,11 @@ then
     fi
 fi
 
-if [ -d '/opt/loxberry/data/plugins/raumserver' ]
-then 
+if [ -d '$LBPDATA/$pluginname' ]
+then
     # change to raumserver folder
-    cd /opt/loxberry/data/plugins/raumserver
-    
+    cd $LBPDATA/$pluginname
+
     #check if raumserver already installed
     if [ `npm list | grep -c "node-raumserver"` -ne 1 ]
     then
@@ -71,8 +71,8 @@ then
     fi
 
     /usr/bin/logger "Raumserver: starting."
-    #run the server: 
-    cd /opt/loxberry/data/plugins/raumserver/node_modules/node-raumserver/
+    #run the server:
+    cd $LBPDATA/$pluginname/node_modules/node-raumserver/
     node raumserver.js
 
     if [ `ps ax | grep -v grep | grep -c raumserver.js` -eq 1 ]
