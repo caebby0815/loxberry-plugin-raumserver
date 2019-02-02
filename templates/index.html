@@ -1,67 +1,107 @@
-<h1><TMPL_VAR NAME=T::BASIC.HEADING_BASICSETTINGS></h1>
-<TMPL_VAR frmStart>
-<table class="formtable" border="0" width="100%">
-  <tr>
-	<td colspan="3">
-		<H1>Raumserver Konfiguration</H1>
-	</td>
-  </tr>
-  <tr>
-	<td width="25%">
-		<label id="lblRaumserverPort"><TMPL_VAR lblRaumserverPort></label>
-	</td>
-	<td width="50%">
-		  <TMPL_VAR raumserverPort>
- 	</td>
-	<td width="25%">
-		&nbsp;
-	</td>
-  </tr>
-  <tr>
-	<td width="25%">
-		<label id="lblRaumserverLoglevel"><TMPL_VAR lblRaumserverLoglevel></label>
-	</td>
-	<td width="50%">
-		  <TMPL_VAR raumserverLoglevel>
- 	</td>
-	<td width="25%">
-    <p>0=error, 1=warnings, 2=info, 3=verbose, 4=debug, 5=silly</p>
-	</td>
-  </tr>
-  <tr>
-	<td colspan="3">
-		<H1>Raumfeld Konfiguration</H1>
-	</td>
-  </tr>
-  <tr>
-	<td width="25%">
-		<label id="lblraumfeldHost"><TMPL_VAR lblraumfeldHost></label>
-	</td>
-	<td width="50%">
-		  <TMPL_VAR raumfeldHost>
- 	</td>
-	<td width="25%">
-		<p>0.0.0.0 = autodetect</p>
-	</td>
-  </tr>
-  <tr>
-	<td width="25%">
-		<label id="lblraumfeldRequestPort"><TMPL_VAR lblraumfeldRequestPort></label>
-	</td>
-	<td width="50%">
-		  <TMPL_VAR raumfeldHostRequestPort>
- 	</td>
-	<td width="25%">
-		&nbsp;
-	</td>
-  </tr>
-  <tr>
-	<td width="25%"></td>
-	<td width="50%"><TMPL_VAR btnSave></td>
-	<td width="25%">
-		&nbsp;
-	</td>
-  </tr>
-</table>
-<TMPL_VAR frmEnd>
-<i><TMPL_VAR NAME=T::FOOTER.GREETING></i>
+<TMPL_IF FORM1>
+  <TMPL_VAR frmStart>
+  <table class="formtable" border="0" width="100%">
+    <tr>
+  	<td colspan="3">
+  		<H1>Raumserver Konfiguration</H1>
+  	</td>
+    </tr>
+    <tr>
+  	<td width="25%">
+  		<label id="lblRaumserverPort"><TMPL_VAR lblRaumserverPort></label>
+  	</td>
+  	<td width="50%">
+  		  <TMPL_VAR raumserverPort>
+   	</td>
+  	<td width="25%">
+  		&nbsp;
+  	</td>
+    </tr>
+    <tr>
+  	<td width="25%">
+  		<label id="lblRaumserverLoglevel"><TMPL_VAR lblRaumserverLoglevel></label>
+  	</td>
+  	<td width="50%">
+  		  <TMPL_VAR raumserverLoglevel>
+   	</td>
+  	<td width="25%">
+      <p>0=error, 1=warnings, 2=info, 3=verbose, 4=debug, 5=silly</p>
+  	</td>
+    </tr>
+    <tr>
+  	<td colspan="3">
+  		<H1>Raumfeld Konfiguration</H1>
+  	</td>
+    </tr>
+    <tr>
+  	<td width="25%">
+  		<label id="lblraumfeldHost"><TMPL_VAR lblraumfeldHost></label>
+  	</td>
+  	<td width="50%">
+  		  <TMPL_VAR raumfeldHost>
+   	</td>
+  	<td width="25%">
+  		<p>0.0.0.0 = autodetect</p>
+  	</td>
+    </tr>
+    <tr>
+  	<td width="25%">
+  		<label id="lblraumfeldRequestPort"><TMPL_VAR lblraumfeldRequestPort></label>
+  	</td>
+  	<td width="50%">
+  		  <TMPL_VAR raumfeldHostRequestPort>
+   	</td>
+  	<td width="25%">
+  		&nbsp;
+  	</td>
+    </tr>
+    <tr>
+  	<td width="25%"></td>
+  	<td width="50%"><TMPL_VAR btnSave></td>
+  	<td width="25%">
+  		&nbsp;
+  	</td>
+    </tr>
+  </table>
+  <TMPL_VAR frmEnd>
+</TMPL_IF>
+<TMPL_IF ERROR>
+  <center>
+  	<table border=0>
+  	<tr>
+  		<td align="center">
+  		<h2><TMPL_VAR HINT_ERROR></h2>
+  		<p>
+  		<TMPL_VAR ERRORMESSAGE>
+  		</p>
+  		</td>
+  	</tr>
+  	<tr>
+  		<td align="center">
+  		<p>
+  		<a id="btnok" data-role="button" data-inline="true" data-mini="true" data-icon="check" href="./index.cgi?form=<TMPL_VAR FORMNO>"><TMPL_VAR SETTINGS.BUTTON_OK></a>
+  		</p>
+  		</td>
+  	</tr>
+  	</table>
+  </center>
+</TMPL_IF>
+<TMPL_IF SAVE>
+  <center>
+  	<table border=0>
+  	<tr>
+  		<td align="center">
+  		<h2><TMPL_VAR SETTINGS.HINT_OK></h2>
+  		<p><TMPL_VAR SETTINGS.OK_SETTINGS_SAVED></p>
+  		</td>
+  	</tr>
+  	<tr>
+  		<td align="center">
+  		<p>
+  		<a id="btnok" data-role="button" data-inline="true" data-mini="true" data-icon="check" href="./index.cgi?form=<TMPL_VAR FORMNO>"><TMPL_VAR SETTINGS.BUTTON_OK></a>
+  		</p>
+  		</td>
+  	</tr>
+  	</table>
+  </center>
+</TMPL_IF>

@@ -42,6 +42,10 @@ my  $home = File::HomeDir->my_home;
 #Pfad zur Raumserver config, normalerweise /_opt/loxberry/data/plugins/raumserver/node_modules/node-raumserver/config
 my  $raumserverCfgFilePath = "$home/data/plugins/raumserver/node_modules/node-raumserver/config";
 
+my $error;
+my $save;
+
+
 # Mit dieser Konstruktion lesen wir uns alle POST-Parameter in den Namespace R.
 my $cgi = CGI->new;
 $cgi->import_names('R');
@@ -67,8 +71,8 @@ sub write_jsonfile{
 	open ($fh, ">$file") or die "Can't write to file '$file' [$!]\n";
 	print $fh encode_json($json);
 	close $fh;
-  print "Konfiguration gespeichert<br>"
 }
+
 
 ##########################################################################
 # Read Settings
@@ -107,97 +111,119 @@ $template->param( lblPluginEnabled => "Plugin aktivieren");
 
 
 # ---------------------------------------------------
-# Control for "frmStart" Form
-# ---------------------------------------------------
-my $frmStart = $cgi->start_form(
-     -name    => 'Raumserver Plugin',
-     -method => 'POST',
- );
-$template->param( frmStart => $frmStart );
-
-# ---------------------------------------------------
-# Control for "frmEnd" Form
-# ---------------------------------------------------
-my $frmEnd = $cgi->end_form();
-$template->param( frmEnd => $frmEnd );
-
-# ---------------------------------------------------
-# Control for "btnSave" Button
-# ---------------------------------------------------
-my $btnSave = $cgi->submit(
-     -name    => 'btnSave',
-     -value => "Speichern",
- );
-$template->param( btnSave => $btnSave );
-
-# ---------------------------------------------------
-# Control for "raumserverPort" Textfield
-# ---------------------------------------------------
-my $raumserverPort = $cgi->textfield(
-     -name    => 'raumserverPort',
-     -default => $rsconfig->{'raumserver'}->{'port'},
- );
-$template->param( raumserverPort => $raumserverPort );
-
-# ---------------------------------------------------
-# Control for "raumserverPort" Textfield
-# ---------------------------------------------------
-my $raumserverLoglevel = $cgi->textfield(
-     -name    => 'raumserverLoglevel',
-     -default => $rsconfig->{'raumserver'}->{'loglevel'},
- );
-$template->param( raumserverLoglevel => $raumserverLoglevel );
-
-# ---------------------------------------------------
-# Control for "raumfeldHost" Textfield
-# ---------------------------------------------------
-my $raumfeldHost = $cgi->textfield(
-     -name    => 'raumfeldHost',
-     -default => $rsconfig->{'raumfeld'}->{'raumfeldHost'},
- );
-$template->param( raumfeldHost => $raumfeldHost );
-
-# ---------------------------------------------------
-# Control for "raumfeldHostRequestPort" Textfield
-# ---------------------------------------------------
-my $raumfeldHostRequestPort = $cgi->textfield(
-     -name    => 'raumfeldHostRequestPort',
-     -default => $rsconfig->{'raumfeld'}->{'raumfeldHostRequestPort'},
- );
-$template->param( raumfeldHostRequestPort => $raumfeldHostRequestPort );
-
-
-# ---------------------------------------------------
-# Control for "pluginEnabled" Flipswitch
-# ---------------------------------------------------
-my @values = ('1', '0' );
-my %labels = (
-     '1' => 'On',
-     '0' => 'Off',
- );
-my $pluginEnabled = $cgi->popup_menu(
-     -name    => 'pluginEnabled',
-     -values  => \@values,
-     -labels  => \%labels,
-     -default => '1',
- );
-$template->param( pluginEnabled => $pluginEnabled );
-
-
-# ---------------------------------------------------
 # Save settings to config file
 # ---------------------------------------------------
 if ($R::btnSave)
 {
- $rsconfig->{'raumserver'}->{'port'} = $R::raumserverPort;
- $rsconfig->{'raumserver'}->{'loglevel'} = $R::raumserverLoglevel;
- $rsconfig->{'raumfeld'}->{'raumfeldHost'} = $R::raumfeldHost;
- $rsconfig->{'raumfeld'}->{'raumfeldHostRequestPort'} = $R::raumfeldHostRequestPort;
- write_jsonfile($rsconfig, "$raumserverCfgFilePath/default.json");
+	$rsconfig->{'raumserver'}->{'port'} = $R::raumserverPort;
+	$rsconfig->{'raumserver'}->{'loglevel'} = $R::raumserverLoglevel;
+	$rsconfig->{'raumfeld'}->{'raumfeldHost'} = $R::raumfeldHost;
+	$rsconfig->{'raumfeld'}->{'raumfeldHostRequestPort'} = $R::raumfeldHostRequestPort;
+	write_jsonfile($rsconfig, "$raumserverCfgFilePath/default.json");
+	# Template output
+
+	$template->param( FORMNO => '1' );
+	$template->param( "SAVE", 1);
+	print $template->output();
+	LoxBerry::Web::lbfooter();
+	exit;
 }
 
-# Nun wird das Template ausgegeben.
-print $template->output();
+# Menu: Server
+if ($R::form eq "1" || !$R::form) {
+	$template->param( "FORM1", 1);
+	# ---------------------------------------------------
+	# Control for "frmStart" Form
+	# ---------------------------------------------------
+	my $frmStart = $cgi->start_form(
+	     -name    => 'Raumserver Plugin',
+	     -method => 'POST',
+	 );
+	$template->param( frmStart => $frmStart );
 
-# Schlussendlich lassen wir noch den Footer ausgeben.
-LoxBerry::Web::lbfooter();
+	# ---------------------------------------------------
+	# Control for "frmEnd" Form
+	# ---------------------------------------------------
+	my $frmEnd = $cgi->end_form();
+	$template->param( frmEnd => $frmEnd );
+
+	# ---------------------------------------------------
+	# Control for "btnSave" Button
+	# ---------------------------------------------------
+	my $btnSave = $cgi->submit(
+	     -name    => 'btnSave',
+	     -value => "Speichern",
+	 );
+	$template->param( btnSave => $btnSave );
+
+	# ---------------------------------------------------
+	# Control for "raumserverPort" Textfield
+	# ---------------------------------------------------
+	my $raumserverPort = $cgi->textfield(
+	     -name    => 'raumserverPort',
+	     -default => $rsconfig->{'raumserver'}->{'port'},
+	 );
+	$template->param( raumserverPort => $raumserverPort );
+
+	# ---------------------------------------------------
+	# Control for "raumserverPort" Textfield
+	# ---------------------------------------------------
+	my $raumserverLoglevel = $cgi->textfield(
+	     -name    => 'raumserverLoglevel',
+	     -default => $rsconfig->{'raumserver'}->{'loglevel'},
+	 );
+	$template->param( raumserverLoglevel => $raumserverLoglevel );
+
+	# ---------------------------------------------------
+	# Control for "raumfeldHost" Textfield
+	# ---------------------------------------------------
+	my $raumfeldHost = $cgi->textfield(
+	     -name    => 'raumfeldHost',
+	     -default => $rsconfig->{'raumfeld'}->{'raumfeldHost'},
+	 );
+	$template->param( raumfeldHost => $raumfeldHost );
+
+	# ---------------------------------------------------
+	# Control for "raumfeldHostRequestPort" Textfield
+	# ---------------------------------------------------
+	my $raumfeldHostRequestPort = $cgi->textfield(
+	     -name    => 'raumfeldHostRequestPort',
+	     -default => $rsconfig->{'raumfeld'}->{'raumfeldHostRequestPort'},
+	 );
+	$template->param( raumfeldHostRequestPort => $raumfeldHostRequestPort );
+
+
+	# ---------------------------------------------------
+	# Control for "pluginEnabled" Flipswitch
+	# ---------------------------------------------------
+	my @values = ('1', '0' );
+	my %labels = (
+	     '1' => 'On',
+	     '0' => 'Off',
+	 );
+	my $pluginEnabled = $cgi->popup_menu(
+	     -name    => 'pluginEnabled',
+	     -values  => \@values,
+	     -labels  => \%labels,
+	     -default => '1',
+	 );
+	$template->param( pluginEnabled => $pluginEnabled );
+
+	# Nun wird das Template ausgegeben.
+	print $template->output();
+	# Schlussendlich lassen wir noch den Footer ausgeben.
+	LoxBerry::Web::lbfooter();
+}
+
+
+# Error
+sub error
+{
+	$template->param( "ERROR", 1);
+	$template->param( "ERRORMESSAGE", $error);
+	LoxBerry::Web::lbheader("Raumserver Plugin V$version", "https://www.loxwiki.eu/display/LOXBERRY/Raumserver", "help.html");
+	print $template->output();
+	LoxBerry::Web::lbfooter();
+
+	exit;
+}

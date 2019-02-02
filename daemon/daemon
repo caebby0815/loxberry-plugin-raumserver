@@ -1,15 +1,12 @@
 #!/bin/sh
-
-# This is a sample DAEMON file which is started at boottime. iIt must be names
-# "start" here and will be renamed according to your Pluginname during
-# installation. CAUTION! MAKE SURE YOUR SCRIPT EXITS CLEANLY! It is a good idea
-# to start your daemon as background process. If you do something wrong here
-# your user's systems may hang forever during boottime!
-
 # Will be executed as user "root".
+pluginname=raumserver
+touch $LBPLOG/$pluginname/$pluginname.log > /dev/null 2>&1
+echo "[loxberry-plugin-$pluginname] Start daemon script" >> $LBPLOG/$pluginname/$pluginname.log
 
-# Name this file "daemon.sh" in your plugin-archive. It will be renamed to NAME
-# during installation
+if [ -x /usr/bin/logger ]; then
+  /usr/bin/logger "[loxberry-plugin-$pluginname] Start daemon script"
+fi
 
 # wait for DNS readiness
 until $(curl --output /dev/null --silent --head --fail http://nodejs.org); do
@@ -18,6 +15,7 @@ until $(curl --output /dev/null --silent --head --fail http://nodejs.org); do
 done
 
 # Test if nodejs is installed otherwise install it:
+echo "[loxberry-plugin-$pluginname] Test if nodejs is installed otherwise install it" >> $LBPLOG/$pluginname/$pluginname.log
 if [ `which nodejs > /dev/null; echo $?` -ne 0 ] || [ `which npm > /dev/null; echo $?` -ne 0 ]
 then
     if [ `grep Hardware /proc/cpuinfo | grep -E -c 'BCM[0-9]+'` -eq 1 ]
@@ -48,39 +46,51 @@ then
     else
         if [ ! -f /etc/apt/sources.list.d/nodesource.list ]
         then
-            /usr/bin/logger "Raumserver installation: nodesources repo not installed. Starting installation now."
+          echo "[loxberry-plugin-$pluginname] Nodesources repo not installed. Starting installation now." >> $LBPLOG/$pluginname/$pluginname.log
             # Nodejs current is recommended as of
             #  https://github.com/ChriD/node-raumserver#requirements
             curl -sL https://deb.nodesource.com/setup_8.x | bash
             apt-get -y install nodejs
+            echo "[loxberry-plugin-$pluginname] Nodesources repo installation done" >> $LBPLOG/$pluginname/$pluginname.log
         fi
     fi
 fi
 
-if [ -d '$LBPDATA/$pluginname' ]
+echo "[loxberry-plugin-raumserver] check if raumserver can be started in $LBPDATA/$pluginname" >> $LBPLOG/$pluginname/$pluginname.log
+
+if [ -d "$LBPDATA/$pluginname" ]
 then
     # change to raumserver folder
     cd $LBPDATA/$pluginname
 
-    #check if raumserver already installed
+    #check if raumserver is already installed
+    echo "[loxberry-plugin-$pluginname] check if raumserver is already installed" >> $LBPLOG/$pluginname/$pluginname.log
     if [ `npm list | grep -c "node-raumserver"` -ne 1 ]
     then
-        /usr/bin/logger "Raumserver installation: node module raumserver not instlled. Starting installation now."
+        echo "[loxberry-plugin-$pluginname] Raumserver installation: node module raumserver not installed. Starting installation now." >> $LBPLOG/$pluginname/$pluginname.log
         # otherwise install the server
         npm install github:ChriD/node-raumserver
+        # copy config file
+        cp -p -v -r $LBPCONFIG/$pluginname/* $LBPDATA/$pluginname/node_modules/node-raumserver/config/
+        echo "[loxberry-plugin-$pluginname] Raumserver installation done." >> $LBPLOG/$pluginname/$pluginname.log
     fi
 
-    /usr/bin/logger "Raumserver: starting."
+    echo "[loxberry-plugin-$pluginname] Raumserver: starting." >> $LBPLOG/$pluginname/$pluginname.log
     #run the server:
     cd $LBPDATA/$pluginname/node_modules/node-raumserver/
     node raumserver.js
 
     if [ `ps ax | grep -v grep | grep -c raumserver.js` -eq 1 ]
     then
-        /usr/bin/logger "Raumserver: Start successful."
+        echo "[loxberry-plugin-$pluginname] Raumserver: Start successful." >> $LBPLOG/$pluginname/$pluginname.log
+        /usr/bin/logger "[loxberry-plugin-$pluginname] Raumserver: Start successful."
     else
-        /usr/bin/logger "Raumserver: Start failed."
-    fi
+        echo "[loxberry-plugin-$pluginname] Raumserver: Start failed." >> $LBPLOG/$pluginname/$pluginname.log
+        /usr/bin/logger "[loxberry-plugin-$pluginname] Raumserver: Start failed."
+   fi
+else
+     echo "[loxberry-plugin-$pluginname] It seems that the folder $LBPDATA/raumserver does not exist or is not accessible" >> $LBPLOG/$pluginname/$pluginname.log
+
 fi
 
 exit 0

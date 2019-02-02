@@ -28,10 +28,6 @@ ARGV3=$3 # Third argument is Plugin installation folder (e.g. raumserver)
 ARGV4=$4 # Forth argument is Plugin version
 ARGV5=$5 # Fifth argument is Base folder of LoxBerry
 
-
-echo "<INFO> Copy config file to raumserver config folder"
-cp -p -v -r  $ARGV5/config/plugins/$ARGV3/* $ARGV5/data/plugins/$ARGV3/node_modules/node-raumserver/config/ 
-
 echo "<WARN> You need to reboot Loxberry in order to complete the installation"
 echo "<WARN> Loxberry muss neu gestartet werden um die Installation abzuschliessen."
 
