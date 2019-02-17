@@ -132,6 +132,25 @@ if ($R::btnSave)
 # Menu: Server
 if ($R::form eq "1" || !$R::form) {
 	$template->param( "FORM1", 1);
+
+	my @values;
+  my %labels;
+
+	# raumserverStatus
+  @values = ('0', '1' );
+  %labels = (
+        '0' => $L{'SETTINGS.LABEL_OFF'},
+        '1' => $L{'SETTINGS.LABEL_ON'},
+	);
+	my $raumserverStatus = $cgi->popup_menu(
+			-name    => 'raumserverStatus',
+			-id      => 'raumserverStatus',
+			-values  => \@values,
+			-labels  => \%labels,
+			-default => '1',
+	);
+	$template->param( raumserverStatus => $raumserverStatus );
+
 	# ---------------------------------------------------
 	# Control for "frmStart" Form
 	# ---------------------------------------------------

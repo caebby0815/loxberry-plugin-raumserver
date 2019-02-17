@@ -2,20 +2,36 @@
   <TMPL_VAR frmStart>
   <table class="formtable" border="0" width="100%">
     <tr>
+  	<td width="25%">
+  		<label id="lblRaumserverStatus"><TMPL_VAR SETTINGS.LABEL_RAUMSERVERSTATUS></label>
+  	</td>
+  	<td width="50%">
+        <fieldset>
+  		  <TMPL_VAR raumserverStatus>
+        </fieldset>
+   	</td>
+  	<td width="25%">
+  		&nbsp;
+  	</td>
+    </tr>
+    <tr>
+      <td colspan="3"><hr></td>
+    </tr>
+    <tr>
   	<td colspan="3">
   		<H1>Raumserver Konfiguration</H1>
   	</td>
     </tr>
     <tr>
-  	<td width="25%">
-  		<label id="lblRaumserverPort"><TMPL_VAR lblRaumserverPort></label>
-  	</td>
-  	<td width="50%">
-  		  <TMPL_VAR raumserverPort>
-   	</td>
-  	<td width="25%">
-  		&nbsp;
-  	</td>
+    <td width="25%">
+      <label id="lblRaumserverPort"><TMPL_VAR lblRaumserverPort></label>
+    </td>
+    <td width="50%">
+        <TMPL_VAR raumserverPort>
+    </td>
+    <td width="25%">
+      &nbsp;
+    </td>
     </tr>
     <tr>
   	<td width="25%">
@@ -64,6 +80,12 @@
     </tr>
   </table>
   <TMPL_VAR frmEnd>
+
+  <script>
+  // Add some attributes PERL::CGI doesn't provide
+  $('select[name=raumserverStatus]').attr('data-role','flipswitch');
+  </script>
+
 </TMPL_IF>
 <TMPL_IF ERROR>
   <center>

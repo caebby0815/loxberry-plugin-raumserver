@@ -1,4 +1,6 @@
 #!/bin/sh
+ARGV0=$0 # Zero argument is shell command
+ARGV1=$1 # First argument should be nothing (standard), "status", "start", "stop". This commands are intended to be used by the cgi script, to start, stop or get the running status from the raumserver.
 # Will be executed as user "root".
 pluginname=raumserver
 touch $LBPLOG/$pluginname/$pluginname.log > /dev/null 2>&1
@@ -14,12 +16,60 @@ until $(curl --output /dev/null --silent --head --fail http://nodejs.org); do
     sleep 5
 done
 
+case $ARGV1 in
+	status)
+		echo "[loxberry-plugin-$pluginname] Raumserver status requested" >> $LBPLOG/$pluginname/$pluginname.log
+    if [ `ps ax | grep -v grep | grep -c raumserver.js` -eq 1 ]
+    then
+      echo "[loxberry-plugin-$pluginname] Raumserver status is: running" >> $LBPLOG/$pluginname/$pluginname.log
+      echo "running"
+    else
+      echo "[loxberry-plugin-$pluginname] Raumserver status is: stopped" >> $LBPLOG/$pluginname/$pluginname.log
+      echo "stopped"
+    fi
+    exit 0;
+		;;
+	start)
+		echo "[loxberry-plugin-$pluginname] Raumserver START requested" >> $LBPLOG/$pluginname/$pluginname.log
+
+    if [ `ps ax | grep -v grep | grep -c raumserver.js` -eq 1 ]
+    then
+      echo "[loxberry-plugin-$pluginname] Raumserver already running, please first stop it" >> $LBPLOG/$pluginname/$pluginname.log
+    else
+      echo "[loxberry-plugin-$pluginname] Raumserver: starting." >> $LBPLOG/$pluginname/$pluginname.log
+      #run the server:
+      cd $LBPDATA/$pluginname/node_modules/node-raumserver/
+      node raumserver.js
+
+      if [ `ps ax | grep -v grep | grep -c raumserver.js` -eq 1 ]
+      then
+          echo "[loxberry-plugin-$pluginname] Raumserver: Start successful." >> $LBPLOG/$pluginname/$pluginname.log
+          /usr/bin/logger "[loxberry-plugin-$pluginname] Raumserver: Start successful."
+      else
+          echo "[loxberry-plugin-$pluginname] Raumserver: Start failed." >> $LBPLOG/$pluginname/$pluginname.log
+          /usr/bin/logger "[loxberry-plugin-$pluginname] Raumserver: Start failed."
+      fi
+    fi
+    exit 1;
+    ;;
+  stop)
+  		echo "[loxberry-plugin-$pluginname] Raumserver STOP reqeusted" >> $LBPLOG/$pluginname/$pluginname.log
+      pkill -f raumserver.js >> $LBPLOG/$pluginname/$pluginname.log
+      exit 1;
+      ;;
+	*)
+		echo "No or wrong argument:$ARGV1"
+    echo "[loxberry-plugin-$pluginname] Daemon script was called without or with wrong parameter" >> $LBPLOG/$pluginname/$pluginname.log
+		;;
+esac
+
 # Test if nodejs is installed otherwise install it:
 echo "[loxberry-plugin-$pluginname] Test if nodejs is installed otherwise install it" >> $LBPLOG/$pluginname/$pluginname.log
 if [ `which nodejs > /dev/null; echo $?` -ne 0 ] || [ `which npm > /dev/null; echo $?` -ne 0 ]
 then
     if [ `grep Hardware /proc/cpuinfo | grep -E -c 'BCM[0-9]+'` -eq 1 ]
     then
+        echo "[loxberry-plugin-$pluginname] Don't know what would happen here, but logging is never wrong." >> $LBPLOG/$pluginname/$pluginname.log
         # based on https://github.com/audstanley/NodeJs-Raspberry-Pi/
         PICHIP=$(uname -m);
         LINKTONODE=$(curl -sG https://nodejs.org/dist/latest-v9.x/ | awk '{print $2}' | grep -P 'href=\"node-v9\.\d{1,}\.\d{1,}-linux-'$PICHIP'\.tar\.gz' | sed 's/href="//' | sed 's/<\/a>//' | sed 's/">.*//');
